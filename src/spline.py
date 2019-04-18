@@ -43,7 +43,7 @@ def transpose(xs):
 
 
 def plot(xs, ys):
-    _, ax = subplots()
+    _, ax = subplots(figsize=(8, 8), dpi=300)
     ax.scatter(*transpose(xs))
     ax.plot(*transpose(ys))
     ax.set_aspect("equal")
@@ -54,7 +54,7 @@ def plot(xs, ys):
 
 def main():
     points = \
-        [ [-0.5, 3]
+        [ [-0.5, 5]
         , [-2, 0]
         , [0.5, -0.5]
         , [0, 2]
@@ -65,7 +65,8 @@ def main():
         , [2, -0.5]
         , [0, -2.75]
         ]
-    plot(points, spline(points, 150))
+    n = 5000
+    plot(points, spline(points, n))
 
 
 if __name__ == "__main__":

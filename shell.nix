@@ -21,7 +21,7 @@ with pkgs; mkShell {
         else
             alias open="xdg-open"
         fi
-        alias flake8="flake8 --ignore E124,E128,E201,E203,E241,W503,E731"
+        alias flake8="flake8 --ignore E124,E128,E201,E203,E241,E306,W503,E731"
         export WD=$(pwd)
         if [ ! -d pngs/ ]; then
             mkdir pngs/
