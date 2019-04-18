@@ -16,8 +16,10 @@ with pkgs; mkShell {
     ];
     shellHook = ''
         if [ $(uname -s) = "Darwin" ]; then
-            alias ls='ls --color=auto'
-            alias ll='ls -l'
+            alias ls="ls --color=auto"
+            alias ll="ls -l"
+        else
+            alias open="xdg-open"
         fi
         alias flake8="flake8 --ignore E124,E128,E201,E203,E241,W503,E731"
         export WD=$(pwd)
