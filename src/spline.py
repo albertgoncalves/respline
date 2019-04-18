@@ -34,10 +34,14 @@ def interpolate(t, degree, points):
     return result
 
 
-def plot(x, y):
+def transpose(xs):
+    return zip(*xs)
+
+
+def plot(xs, ys):
     _, ax = subplots()
-    ax.scatter(*zip(*x))
-    ax.plot(*zip(*y))
+    ax.scatter(*transpose(xs))
+    ax.plot(*transpose(ys))
     tight_layout()
     savefig("{}/pngs/plot.png".format(environ["WD"]))
     close()
