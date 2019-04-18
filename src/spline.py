@@ -55,6 +55,7 @@ def spline(t, degree, points):
 
 def main():
     t = 100
+    degree = 2
     points = \
         [ [-0.5, 3]
         , [-1, 0]
@@ -65,7 +66,6 @@ def main():
         , [-1, 0]
         , [-1, -1]
         ]
-    degree = 2
     plot(points, spline(t, degree, points))
 
 
