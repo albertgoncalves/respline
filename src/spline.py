@@ -9,13 +9,11 @@ from matplotlib.pyplot import close, subplots, savefig, tight_layout
 
 def interpolate(t, degree, points):
     n = len(points)
+    if (degree < 1) or (degree >= n):
+        raise ValueError("0 < degree < n points")
     d = len(points[0])
     knots = list(range(n + degree + 1))
     weights = [1] * n
-    if degree < 1:
-        raise ValueError("degree must be at least 1 (linear)")
-    if degree > (n - 1):
-        raise ValueError("degree must be less than or equal to point count -1")
     domain = [degree, len(knots) - 1 - degree]
     low = knots[domain[0]]
     high = knots[domain[1]]
@@ -25,22 +23,14 @@ def interpolate(t, degree, points):
     for s in range(*domain):
         if (t >= knots[s]) and (t <= knots[s + 1]):
             break
-    vs = []
-    for i in range(n):
-        v = []
-        for j in range(d):
-            v.append(points[i][j] * weights[i])
-        v.append(weights[i])
-        vs.append(v)
+    f = lambda i, j: points[i][j] * weights[i] if j != d else weights[i]
+    v = [[f(i, j) for j in range(d + 1)] for i in range(n)]
     for l in range(1, degree + 1):
-        i = s
         for i in range(s, (s - degree - 1 + l), -1):
             alpha = (t - knots[i]) / (knots[i + degree + 1 - l] - knots[i])
             for j in range(d + 1):
-                vs[i][j] = (1 - alpha) * vs[i - 1][j] + alpha * vs[i][j]
-    result = []
-    for i in range(d):
-        result.append(vs[s][i] / vs[s][d])
+                v[i][j] = (1 - alpha) * v[i - 1][j] + alpha * v[i][j]
+    result = [v[s][i] / v[s][d] for i in range(d)]
     return result
 
 
@@ -61,7 +51,6 @@ def spline(t, degree, points):
 
 def main():
     t = 100
-    degree = 2
     points = \
         [ [-0.5, 3]
         , [-1, 0]
@@ -72,6 +61,7 @@ def main():
         , [-1, 0]
         , [-1, -1]
         ]
+    degree = 2
     plot(points, spline(t, degree, points))
 
 
