@@ -7,20 +7,15 @@ from os import environ
 from matplotlib.pyplot import close, subplots, savefig, tight_layout
 
 
-def interpolate(t, degree, points, knots=None, weights=None, result=None):
+def interpolate(t, degree, points):
     n = len(points)
     d = len(points[0])
+    knots = list(range(n + degree + 1))
+    weights = [1] * n
     if degree < 1:
         raise ValueError("degree must be at least 1 (linear)")
     if degree > (n - 1):
         raise ValueError("degree must be less than or equal to point count -1")
-    if weights is None:
-        weights = [1] * n
-    if knots is None:
-        knots = list(range(n + degree + 1))
-    else:
-        if len(knots) != (n + degree + 1):
-            raise ValueError("knot length does not equal (n + degree + 1)")
     domain = [degree, len(knots) - 1 - degree]
     low = knots[domain[0]]
     high = knots[domain[1]]
@@ -43,38 +38,41 @@ def interpolate(t, degree, points, knots=None, weights=None, result=None):
             alpha = (t - knots[i]) / (knots[i + degree + 1 - l] - knots[i])
             for j in range(d + 1):
                 vs[i][j] = (1 - alpha) * vs[i - 1][j] + alpha * vs[i][j]
-    if result is None:
-        result = []
+    result = []
     for i in range(d):
         result.append(vs[s][i] / vs[s][d])
     return result
 
 
-def plot(x, y, i):
+def plot(x, y):
     _, ax = subplots()
     ax.scatter(*zip(*x))
     ax.plot(*zip(*y))
     tight_layout()
-    savefig("{}/pngs/{}.png".format(environ["WD"], i))
+    savefig("{}/pngs/plot.png".format(environ["WD"]))
     close()
 
 
+def spline(t, degree, points):
+    return map( lambda t: interpolate(t, degree, points)
+              , map(lambda x: x / t, range(0, t + 1, 1))
+              )
+
+
 def main():
-    z = 100
-    ts = list(map(lambda x: x / z, range(0, z + 1, 1)))
+    t = 100
     degree = 2
-    x = \
-        [ [-1.0,  0.0]
-        , [-0.5,  0.5]
-        , [ 0.5, -0.5]
-        , [ 1.0,  0.0]
+    points = \
+        [ [-0.5, 3]
+        , [-1, 0]
+        , [0.5, -0.5]
+        , [0, 2]
+        , [1, 0]
+        , [-0.5, 0.5]
+        , [-1, 0]
+        , [-1, -1]
         ]
-    interpolate_ = lambda knots: lambda t: interpolate(t, degree, x, knots)
-    ys = map( lambda knots: map(interpolate_(knots), ts)
-            , [None, [0, 0, 0, 1, 2, 2, 2]]
-            )
-    for i, y in enumerate(ys):
-        plot(x, y, i)
+    plot(points, spline(t, degree, points))
 
 
 if __name__ == "__main__":
