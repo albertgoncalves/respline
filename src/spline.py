@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-# exact rip off of https://github.com/thibauts/b-spline
-
 from os import environ
 
 from matplotlib.pyplot import close, savefig, subplots, tight_layout
 
 
 def interpolate(points):
+    # exact rip off of https://github.com/thibauts/b-spline
     n = len(points)
     d = len(points[0])
     degree = 2
@@ -38,14 +37,10 @@ def spline(points, t):
     return map(interpolate(points), map(lambda x: x / t, range(0, t + 1, 1)))
 
 
-def transpose(xs):
-    return zip(*xs)
-
-
 def plot(xs, ys):
     _, ax = subplots(figsize=(8, 8), dpi=300)
-    ax.scatter(*transpose(xs))
-    ax.plot(*transpose(ys))
+    ax.scatter(*zip(*xs))
+    ax.plot(*zip(*ys))
     ax.set_aspect("equal")
     tight_layout()
     savefig("{}/pngs/plot.png".format(environ["WD"]))
@@ -64,9 +59,9 @@ def main():
         , [-3, -1]
         , [2, -0.5]
         , [0, -2.75]
+        , [5, -5]
         ]
-    n = 5000
-    plot(points, spline(points, n))
+    plot(points, spline(points, 5000))
 
 
 if __name__ == "__main__":
