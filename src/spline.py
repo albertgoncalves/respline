@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# exact rip off of https://github.com/thibauts/b-spline
+
 from os import environ
 
 from matplotlib.pyplot import close, subplots, savefig, tight_layout
