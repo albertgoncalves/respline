@@ -1,0 +1,6 @@
+*
+!.gitignore
+!shell.nix
+!src/
+!*.py
+!*.ml
