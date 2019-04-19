@@ -27,10 +27,8 @@ def interpolate(points):
         for l in range(1, degree + 1):
             for i in range(s, (s - degree - 1 + l), -1):
                 alpha = (t - knots[i]) / (knots[i + degree + 1 - l] - knots[i])
-                v[i] = \
-                    [ (1 - alpha) * v[i - 1][j] + alpha * v[i][j]
-                      for j in range(d + 1)
-                    ]
+                for j in range(d + 1):
+                    v[i][j] = (1 - alpha) * v[i - 1][j] + alpha * v[i][j]
         return [v[s][i] / v[s][d] for i in range(d)]
     return f
 

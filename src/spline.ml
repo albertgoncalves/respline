@@ -1,65 +1,55 @@
 module A = Array
 module L = List
 
-let head (default : 'a) : ('a list -> 'a) = function
-    | (x::_) -> x
-    | _ -> default
-
-let rec last (default : 'a) : ('a list -> 'a) = function
-    | [] -> default
-    | [x] -> x
-    | (_::xs) -> last default xs
-
-let zip_with (f : 'a -> 'b -> 'c) (xs : 'a list) (ys : 'b list) : 'c list =
-    let rec loop f accu = function
-        | [], _ | _, [] -> accu
-        | (x::xs), (y::ys) -> loop f (f x y::accu) (xs, ys) in
-    loop f [] (xs, ys) |> L.rev
-
-let rec cox_deboor (knots : float array) (u : float) (k : int) (d : int)
-    : float =
-    if d == 0 then
-        if knots.(k) <= u && u < knots.(k + 1) then
-            1.0
-        else
-            0.0
+let range (a : int) (b : int) : int list =
+    if b > a then
+        L.init (b - a) (fun x -> x + a)
     else
-        let a =
-            let den = knots.(k) -. knots.(k + d) in
-            if den <> 0.0 then
-                (cox_deboor knots u k (d - 1)) *. ((knots.(k) -. u) /. den)
-            else
-                0.0 in
-        let b =
-            let den = knots.(k + d + 1) -. knots.(k + 1) in
-            if den <> 0.0 then
-                let num = knots.(k + d + 1) -. u in
-                (cox_deboor knots u (k + 1) (d - 1)) *. (num /. den)
-            else
-                0.0 in
-        a +. b
+        L.init (a - b) (fun x -> a - x)
 
-let bspline (cvs : float list list) (n : int) (d : int) : float list list =
-    let count : int = L.length cvs in
-    let knots : float array =
-        A.concat
-            [ A.make d 0.0
-            ; A.init (count - d + 1) float_of_int
-            ; count - d |> float_of_int |> A.make d
-            ] in
-    let rec loop (u : float) (k : int) (accu : float list) = function
-        | [] -> accu
-        | (cv::cvs) ->
-            let xs = (L.map (( *.) (cox_deboor knots u k d)) cv) in
-            loop u (k + 1) (zip_with (+.) accu xs) cvs in
-    let us : float list =
-        let f x =
-            (float_of_int x /. (float_of_int n -. 1.0))
-            *. (float_of_int count -. float_of_int d) in
-        L.init n f in
-    let sample (u : float) : float list =
-        if u = float_of_int (count - d) then
-            last [] cvs
+let head (default : 'a) (xs : 'a array) : 'a = try xs.(1) with error -> default
+
+let interpolate (points : float list list) (t : float) : float list =
+    let points' = L.map A.of_list points |> A.of_list in
+    let degree : int = 2 in
+    let n : int = A.length points' in
+    if n <= degree then
+        []
+    else
+        let d : int = head (A.make 0 0.0) points' |> A.length in
+        if (A.exists (fun point -> A.length point <> d) points') then
+            []
         else
-            loop u 0 (L.init (head [] cvs |> L.length) (fun _ -> 0.0)) cvs in
-    L.map sample us
+            let knots : float array =
+                range 0 (n + degree + 1) |> L.map float_of_int |> A.of_list in
+            let degree' : int = (A.length knots) - 1 - degree in
+            let low : float = knots.(degree) in
+            let high : float = knots.(degree') in
+            let t' : float = t *. (high -. low) +. low in
+            if (t' < low) || (t' > high) then
+                []
+            else
+                let s : int =
+                    L.find
+                        (fun s -> (t' >= knots.(s)) && (t' <= knots.(s + 1)))
+                        (range degree degree') in
+                let v : float array array =
+                    let f (i : int) : float array =
+                        A.map
+                            (fun j -> if j != d then points'.(i).(j) else 1.0)
+                            (range 0 (d + 1) |> A.of_list) in
+                    A.map f (range 0 n |> A.of_list) in
+                for l = 1 to degree do
+                    for i = s downto (s - degree + l) do
+                        let alpha =
+                            (t' -. knots.(i))
+                            /. (knots.(i + degree + 1 - l) -. knots.(i)) in
+                        for j = 0 to d do
+                            let x =
+                                (1.0 -. alpha) *. v.(i - 1).(j)
+                                +. alpha *. v.(i).(j) in
+                            A.set v.(i) j x
+                        done
+                    done
+                done;
+                L.map (fun i -> v.(s).(i) /. v.(s).(d)) (range 0 d)
