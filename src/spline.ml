@@ -8,13 +8,13 @@ let range (f : (int -> (int -> int) -> 'a)) (a : int) (b : int) : 'b =
         f (a - b) (fun x -> a - x)
 
 let interpolate (points : float list list) (t : float) : float list =
-    let points' = L.map A.of_list points |> A.of_list in
+    let points' : float array array = L.map A.of_list points |> A.of_list in
     let degree : int = 2 in
     let n : int = A.length points' in
     if n <= degree then
         []
     else
-        let d : int = points'.(0) |> A.length in
+        let d : int = A.length points'.(0) in
         if (A.exists (fun point -> A.length point <> d) points') then
             []
         else
@@ -39,13 +39,13 @@ let interpolate (points : float list list) (t : float) : float list =
                     A.map f (range A.init 0 n) in
                 for l = 1 to degree do
                     for i = s downto (s - degree + l) do
-                        let alpha =
+                        let alpha : float =
                             (t' -. knots.(i))
                             /. (knots.(i + degree + 1 - l) -. knots.(i)) in
                         for j = 0 to d do
-                            let x =
-                                (1.0 -. alpha) *. v.(i - 1).(j)
-                                +. alpha *. v.(i).(j) in
+                            let x : float =
+                                ((1.0 -. alpha) *. v.(i - 1).(j))
+                                +. (alpha *. v.(i).(j)) in
                             A.set v.(i) j x
                         done
                     done
