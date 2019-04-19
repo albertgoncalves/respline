@@ -1,4 +1,5 @@
 module O = OUnit2
+module OU = OUnitTest
 
 let (>:::) = O.(>:::)
 let (>::) = O.(>::)
@@ -6,8 +7,7 @@ let (>::) = O.(>::)
 let test_example (test_ctxt : O.test_ctxt) : unit =
     O.assert_equal true true
 
-
-let suite : (OUnitTest.test) list =
+let suite : (OU.test) list =
     [ "example" >:: test_example
     ]
 
