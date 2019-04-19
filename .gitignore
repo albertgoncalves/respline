@@ -1,6 +1,7 @@
 *
 !.gitignore
 !shell.nix
+!.ocp-indent
 !src/
 !*.py
 !*.ml
