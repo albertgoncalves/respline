@@ -1,13 +1,11 @@
 module A = Array
 module L = List
 
-let range (a : int) (b : int) : int list =
+let range (f : (int -> (int -> int) -> 'a)) (a : int) (b : int) : 'b =
     if b > a then
-        L.init (b - a) (fun x -> x + a)
+        f (b - a) (fun x -> x + a)
     else
-        L.init (a - b) (fun x -> a - x)
-
-let head (default : 'a) (xs : 'a array) : 'a = try xs.(1) with error -> default
+        f (a - b) (fun x -> a - x)
 
 let interpolate (points : float list list) (t : float) : float list =
     let points' = L.map A.of_list points |> A.of_list in
@@ -16,12 +14,12 @@ let interpolate (points : float list list) (t : float) : float list =
     if n <= degree then
         []
     else
-        let d : int = head (A.make 0 0.0) points' |> A.length in
+        let d : int = points'.(0) |> A.length in
         if (A.exists (fun point -> A.length point <> d) points') then
             []
         else
             let knots : float array =
-                range 0 (n + degree + 1) |> L.map float_of_int |> A.of_list in
+                range A.init 0 (n + degree + 1) |> A.map float_of_int in
             let degree' : int = (A.length knots) - 1 - degree in
             let low : float = knots.(degree) in
             let high : float = knots.(degree') in
@@ -32,13 +30,13 @@ let interpolate (points : float list list) (t : float) : float list =
                 let s : int =
                     L.find
                         (fun s -> (t' >= knots.(s)) && (t' <= knots.(s + 1)))
-                        (range degree degree') in
+                        (range L.init degree degree') in
                 let v : float array array =
                     let f (i : int) : float array =
                         A.map
                             (fun j -> if j != d then points'.(i).(j) else 1.0)
-                            (range 0 (d + 1) |> A.of_list) in
-                    A.map f (range 0 n |> A.of_list) in
+                            (range A.init 0 (d + 1)) in
+                    A.map f (range A.init 0 n) in
                 for l = 1 to degree do
                     for i = s downto (s - degree + l) do
                         let alpha =
@@ -52,4 +50,4 @@ let interpolate (points : float list list) (t : float) : float list =
                         done
                     done
                 done;
-                L.map (fun i -> v.(s).(i) /. v.(s).(d)) (range 0 d)
+                L.map (fun i -> v.(s).(i) /. v.(s).(d)) (range L.init 0 d)
