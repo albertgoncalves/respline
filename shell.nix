@@ -3,10 +3,11 @@ with pkgs; mkShell {
     name = "OcamlPython";
     buildInputs = [
         (with ocaml-ng.ocamlPackages_4_07; [
-            ocaml
             cairo2
             findlib
+            ocaml
             ocp-indent
+            ounit
             utop
         ])
         (python37.withPackages(ps: with ps; [
@@ -23,8 +24,10 @@ with pkgs; mkShell {
         fi
         alias flake8="flake8 --ignore E124,E128,E201,E203,E241,E306,W503,E731"
         export WD=$(pwd)
-        if [ ! -d pngs/ ]; then
-            mkdir pngs/
-        fi
+        for d in pngs/ bin/; do
+            if [ ! -d $d ]; then
+                mkdir $d
+            fi
+        done
     '';
 }

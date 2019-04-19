@@ -3,5 +3,7 @@
 !shell.nix
 !.ocp-indent
 !src/
+!test/
 !*.py
 !*.ml
+!*.sh
