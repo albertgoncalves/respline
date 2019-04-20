@@ -6,7 +6,6 @@ with pkgs; mkShell {
             cairo2
             findlib
             ocaml
-            ocp-indent
             ounit
             utop
         ])

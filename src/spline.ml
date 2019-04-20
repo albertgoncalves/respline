@@ -53,5 +53,5 @@ let interpolate (points : float list list) (t : float) : float list =
                             A.set v.(i) j x
                         done
                     done
-                done;
-                L.init d (fun i -> v.(s).(i) /. v.(s).(d))
+                done
+                ; L.init d (fun i -> v.(s).(i) /. v.(s).(d))
