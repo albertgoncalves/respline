@@ -4,8 +4,6 @@ module S = Spline
 module Y = Sys
 
 let main () : unit =
-    let lw = 0.004 in
-    let radius = 0.1 in
     let points =
         [ [0.0; 0.0]
         ; [0.5; 0.5]
@@ -31,14 +29,15 @@ let main () : unit =
         ; g = 1.0
         ; b = 1.0
         } in
+    let linewidth = 0.0045 in
     let n = L.length points in
-    let spline = L.map (S.interpolate points) (S.slice (n * 50)) in
-    let (surface, cr, dimensions) = D.initialize 300 4 4 in
+    let spline = n * 50 |> S.slice |> L.map (S.interpolate points) in
+    let (surface, cr, dimensions) = D.initialize 150 4 4 in
     D.antialias cr
     ; D.background cr dimensions white
     ; D.scale cr dimensions
-    ; D.dots cr points lw radius black
-    ; D.lines cr spline lw black
+    ; D.dots cr points linewidth 0.1 black
+    ; D.lines cr spline linewidth black
     ; D.export surface Y.argv.(1)
 
 let () = main ()

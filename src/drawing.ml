@@ -35,8 +35,8 @@ let antialias (cr : C.context) : unit = C.set_antialias cr C.ANTIALIAS_SUBPIXEL
 let scale (cr : C.context) (dimensions : dimensions) : unit =
     C.scale cr (dimensions.w /. dimensions.j) (dimensions.h /. dimensions.i)
 
-let brush (cr : C.context) (lw : float) (color : color) : unit =
-    C.set_line_width cr lw
+let brush (cr : C.context) (linewidth : float) (color : color) : unit =
+    C.set_line_width cr linewidth
     ; C.set_source_rgb cr color.r color.g color.b
 
 let background (cr : C.context) (dimensions : dimensions) (color : color)
@@ -45,23 +45,23 @@ let background (cr : C.context) (dimensions : dimensions) (color : color)
     ; C.set_source_rgb cr color.r color.g color.b
     ; C.fill cr
 
-let lines (cr : C.context) (points : float list list) (lw : float)
+let lines (cr : C.context) (points : float list list) (linewidth : float)
         (color : color) : unit =
     let line = function
-        | [x; y] -> C.line_to cr x y
+        | x::y::_ -> C.line_to cr x y
         | _ -> () in
-    brush cr lw color
+    brush cr linewidth color
     ; L.iter line points
     ; C.stroke cr
 
-let dots (cr : C.context) (points : float list list) (lw : float)
+let dots (cr : C.context) (points : float list list) (linewidth : float)
         (radius : float) (color : color) : unit =
     let dot = function
-        | [x; y] ->
+        | x::y::_ ->
             C.arc cr x y radius 0.0 (2.0 *. F.pi)
             ; C.stroke cr
         | _ -> () in
-    brush cr lw color
+    brush cr linewidth color
     ; L.iter dot points
 
 let export (surface : C.Surface.t) (filename : string) : unit =
