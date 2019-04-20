@@ -27,41 +27,45 @@ let initialize (resolution : int) (i : int) (j : int)
         ; j = float_of_int j
         } in
     let surface = C.Image.create C.Image.ARGB32 w h in
-    let cr = C.create surface in
-    (surface, cr, dimensions)
+    let context = C.create surface in
+    (surface, context, dimensions)
 
-let antialias (cr : C.context) : unit = C.set_antialias cr C.ANTIALIAS_SUBPIXEL
+let antialias (context : C.context) : unit =
+    C.set_antialias context C.ANTIALIAS_SUBPIXEL
 
-let scale (cr : C.context) (dimensions : dimensions) : unit =
-    C.scale cr (dimensions.w /. dimensions.j) (dimensions.h /. dimensions.i)
+let scale (context : C.context) (dimensions : dimensions) : unit =
+    C.scale
+        context
+        (dimensions.w /. dimensions.j)
+        (dimensions.h /. dimensions.i)
 
-let brush (cr : C.context) (linewidth : float) (color : color) : unit =
-    C.set_line_width cr linewidth
-    ; C.set_source_rgb cr color.r color.g color.b
+let brush (context : C.context) (linewidth : float) (color : color) : unit =
+    C.set_line_width context linewidth
+    ; C.set_source_rgb context color.r color.g color.b
 
-let background (cr : C.context) (dimensions : dimensions) (color : color)
+let background (context : C.context) (dimensions : dimensions) (color : color)
         : unit =
-    C.rectangle cr 0.0 0.0 dimensions.w dimensions.h
-    ; C.set_source_rgb cr color.r color.g color.b
-    ; C.fill cr
+    C.rectangle context 0.0 0.0 dimensions.w dimensions.h
+    ; C.set_source_rgb context color.r color.g color.b
+    ; C.fill context
 
-let lines (cr : C.context) (points : float list list) (linewidth : float)
+let lines (context : C.context) (points : float list list) (linewidth : float)
         (color : color) : unit =
     let line = function
-        | x::y::_ -> C.line_to cr x y
+        | x::y::_ -> C.line_to context x y
         | _ -> () in
-    brush cr linewidth color
+    brush context linewidth color
     ; L.iter line points
-    ; C.stroke cr
+    ; C.stroke context
 
-let dots (cr : C.context) (points : float list list) (linewidth : float)
+let dots (context : C.context) (points : float list list) (linewidth : float)
         (radius : float) (color : color) : unit =
     let dot = function
         | x::y::_ ->
-            C.arc cr x y radius 0.0 (2.0 *. F.pi)
-            ; C.stroke cr
+            C.arc context x y radius 0.0 (2.0 *. F.pi)
+            ; C.stroke context
         | _ -> () in
-    brush cr linewidth color
+    brush context linewidth color
     ; L.iter dot points
 
 let export (surface : C.Surface.t) (filename : string) : unit =

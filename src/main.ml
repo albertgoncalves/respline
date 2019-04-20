@@ -4,6 +4,8 @@ module S = Spline
 module Y = Sys
 
 let main () : unit =
+    let j = 5 in
+    let i = 4 in
     let points =
         [ [0.0; 0.0]
         ; [0.5; 0.5]
@@ -16,9 +18,12 @@ let main () : unit =
         ; [1.0; 2.0]
         ; [3.0; 3.0]
         ; [2.0; 0.0]
-        ; [4.0; 4.0]
-        ; [0.0; 0.0]
+        ; [5.0; 4.0]
+        ; [0.0; 4.0]
+        ; [5.0; 0.0]
         ] in
+    let spline =
+        (L.length points) * 50 |> S.slice |> L.map (S.interpolate points) in
     let black : D.color =
         { r = 0.0
         ; g = 0.0
@@ -30,14 +35,13 @@ let main () : unit =
         ; b = 1.0
         } in
     let linewidth = 0.0045 in
-    let n = L.length points in
-    let spline = n * 50 |> S.slice |> L.map (S.interpolate points) in
-    let (surface, cr, dimensions) = D.initialize 150 4 4 in
-    D.antialias cr
-    ; D.background cr dimensions white
-    ; D.scale cr dimensions
-    ; D.dots cr points linewidth 0.1 black
-    ; D.lines cr spline linewidth black
+    let radius = 0.1 in
+    let (surface, context, dimensions) = D.initialize 150 i j in
+    D.antialias context
+    ; D.background context dimensions white
+    ; D.scale context dimensions
+    ; D.dots context points linewidth radius black
+    ; D.lines context spline linewidth black
     ; D.export surface Y.argv.(1)
 
 let () = main ()
