@@ -10,6 +10,7 @@ let range (a : int) (b : int) : int list =
         L.init (a - b) (fun x -> a - x)
 
 let interpolate (points : float list list) (t : float) : float list =
+    (* rip off of https://github.com/thibauts/b-spline *)
     let points' : float array array = L.map A.of_list points |> A.of_list in
     let degree : int = 2 in
     let n : int = A.length points' in
