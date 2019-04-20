@@ -6,7 +6,7 @@ from matplotlib.pyplot import close, savefig, subplots, tight_layout
 
 
 def interpolate(points):
-    # exact rip off of https://github.com/thibauts/b-spline
+    # rip off of https://github.com/thibauts/b-spline
     n = len(points)
     d = len(points[0])
     degree = 2
