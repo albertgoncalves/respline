@@ -1,7 +1,7 @@
 module A = Array
 module L = List
 
-let resolution (n : int) =
+let slice (n : int) : float list =
     L.init (n + 1) (fun x -> float_of_int x /. float_of_int n)
 
 let range (a : int) (b : int) : int list =

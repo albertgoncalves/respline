@@ -43,7 +43,7 @@ def plot(xs, ys):
     ax.plot(*zip(*ys))
     ax.set_aspect("equal")
     tight_layout()
-    savefig("{}/pngs/plot.png".format(environ["WD"]))
+    savefig("{}/pngs/py.png".format(environ["WD"]))
     close()
 
 
