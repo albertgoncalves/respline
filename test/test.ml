@@ -64,6 +64,6 @@ let suite : (U.test) list =
     ; "out_of_bounds" >:: out_of_bounds
     ]
 
-let main () = "suite" >::: suite |> O.run_test_tt_main
+let main () : unit = "suite" >::: suite |> O.run_test_tt_main
 
 let () = main ()
