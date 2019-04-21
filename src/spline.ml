@@ -1,14 +1,8 @@
 module A = Array
 module L = List
+module U = Utils
 
-let slice (n : int) : float list =
-    L.init (n + 1) (fun x -> float_of_int x /. float_of_int n)
-
-let range (a : int) (b : int) : int list =
-    if b > a then
-        L.init (b - a) (fun x -> x + a)
-    else
-        L.init (a - b) (fun x -> a - x)
+let (|.) = U.(|.)
 
 let interpolate (points : float list list) (t : float) : float list =
     (* rip off of https://github.com/thibauts/b-spline *)
@@ -33,7 +27,7 @@ let interpolate (points : float list list) (t : float) : float list =
                 let s : int =
                     L.find
                         (fun s -> (t' >= knots.(s)) && (t' <= knots.(s + 1)))
-                        (range degree degree') in
+                        (U.range degree degree') in
                 let v : float array array =
                     A.init n (fun i ->
                         A.init (d + 1) (fun j ->
@@ -56,5 +50,5 @@ let interpolate (points : float list list) (t : float) : float list =
                 done
                 ; L.init d (fun i -> v.(s).(i) /. v.(s).(d))
 
-let spline (points : float list list) (n : int) : float list list =
-    (L.length points) * n |> slice |> L.map (interpolate points)
+let spline (points : float list list) : (int -> float list list) =
+    L.map (interpolate points) |. U.slice |. (( * ) (L.length points))
