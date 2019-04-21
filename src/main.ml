@@ -19,8 +19,8 @@ let sentences (n : int) (i : int) (j : int) : float list list list =
             points (R.int n) j' (j' +. 1.0) i' (i' +. 1.0))))
 
 let main () : unit =
-    let j = 8 in
-    let i = 10 in
+    let j = Y.argv.(2) |> int_of_string in
+    let i = Y.argv.(3) |> int_of_string in
     let resolution = 500 / (min i j) in
     let points' =
         Y.argv.(1) |> int_of_string |> R.init
@@ -46,6 +46,6 @@ let main () : unit =
             D.dots context points'' (linewidth /. 5.0) radius black
             ; D.lines context (S.spline points'' 100) linewidth black)
         points'
-    ; D.export surface Y.argv.(2)
+    ; D.export surface Y.argv.(4)
 
 let () = main ()

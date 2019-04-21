@@ -8,4 +8,4 @@ ocamlfind ocamlopt \
     -linkpkg $WD/src/utils.ml $WD/src/spline.ml $WD/src/drawing.ml \
     $WD/src/main.ml \
     -o $WD/bin/main
-$WD/bin/main $1 $2
+$WD/bin/main $1 $2 $3 $4
