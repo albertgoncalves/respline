@@ -55,3 +55,6 @@ let interpolate (points : float list list) (t : float) : float list =
                     done
                 done
                 ; L.init d (fun i -> v.(s).(i) /. v.(s).(d))
+
+let spline (points : float list list) (n : int) : float list list =
+    (L.length points) * n |> slice |> L.map (interpolate points)

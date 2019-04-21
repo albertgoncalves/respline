@@ -13,17 +13,15 @@ let main () : unit =
         ; [1.0; 0.5]
         ; [0.5; 0.45]
         ; [1.75; 1.0]
-        ; [2.0; 4.0]
         ; [2.0; 2.0]
+        ; [2.0; 4.0]
         ; [1.0; 2.0]
-        ; [3.0; 3.0]
         ; [2.0; 0.0]
+        ; [3.0; 3.0]
         ; [5.0; 4.0]
         ; [0.0; 4.0]
         ; [5.0; 0.0]
         ] in
-    let spline =
-        (L.length points) * 50 |> S.slice |> L.map (S.interpolate points) in
     let black : D.color =
         { r = 0.0
         ; g = 0.0
@@ -41,7 +39,7 @@ let main () : unit =
     ; D.background context dimensions white
     ; D.scale context dimensions
     ; D.dots context points linewidth radius black
-    ; D.lines context spline linewidth black
+    ; D.lines context (S.spline points 50) linewidth black
     ; D.export surface Y.argv.(1)
 
 let () = main ()
