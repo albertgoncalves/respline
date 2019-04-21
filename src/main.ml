@@ -7,7 +7,9 @@ module Y = Sys
 let main () : unit =
     let j = 1 in
     let i = 1 in
-    let points = L.init 10 (fun _ -> L.init 2 (fun _ -> R.float 1.0)) in
+    let points =
+        Y.argv.(1) |> int_of_string |> R.init
+        ; L.init (R.int 15) (fun _ -> L.init 2 (fun _ -> R.float 1.0)) in
     let black : D.color =
         { r = 0.0
         ; g = 0.0
@@ -25,7 +27,7 @@ let main () : unit =
     ; D.background context dimensions white
     ; D.scale context dimensions
     ; D.dots context points (linewidth /. 4.0) radius black
-    ; D.lines context (S.spline points 50) linewidth black
-    ; D.export surface Y.argv.(1)
+    ; D.lines context (S.spline points 100) linewidth black
+    ; D.export surface Y.argv.(2)
 
 let () = main ()
