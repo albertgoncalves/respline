@@ -4,6 +4,8 @@
 !.ocp-indent
 !src/
 !test/
+!test
+!main
 !*.py
 !*.ml
 !*.sh

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+ocamlfind ocamlopt \
+    -I $WD/src/ \
+    -package cairo2 \
+    -linkpkg $WD/src/utils.ml $WD/src/spline.ml $WD/src/drawing.ml \
+    $WD/src/main.ml \
+    -o $WD/bin/main
+$WD/bin/main $1 $2
