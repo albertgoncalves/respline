@@ -17,9 +17,9 @@ let interpolate (points : float list list) (t : float) : float list =
             []
         else
             let knots : float array = A.init (n + degree + 1) float_of_int in
-            let degree' : int = (A.length knots) - 1 - degree in
+            let domain : int = (A.length knots) - 1 - degree in
             let low : float = knots.(degree) in
-            let high : float = knots.(degree') in
+            let high : float = knots.(domain) in
             let t' : float = t *. (high -. low) +. low in
             if (t' < low) || (t' > high) then
                 []
@@ -27,7 +27,7 @@ let interpolate (points : float list list) (t : float) : float list =
                 let s : int =
                     L.find
                         (fun s -> (t' >= knots.(s)) && (t' <= knots.(s + 1)))
-                        (U.range degree degree') in
+                        (U.range degree domain) in
                 let v : float array array =
                     A.init n (fun i ->
                         A.init (d + 1) (fun j ->

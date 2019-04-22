@@ -14,7 +14,8 @@ def interpolate(points):
         raise ValueError("len(points) must be greater than 2")
     knots = list(range(n + degree + 1))
     domain = [degree, len(knots) - 1 - degree]
-    low, high = [knots[domain[i]] for i in range(2)]
+    low = knots[domain[0]]
+    high = knots[domain[1]]
     def f(t):
         t = t * (high - low) + low
         if (t < low) or (t > high):
