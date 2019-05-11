@@ -5,11 +5,10 @@ from os import environ
 from matplotlib.pyplot import close, savefig, subplots, tight_layout
 
 
-def interpolate(points):
+def interpolate(points, degree):
     # rip off of https://github.com/thibauts/b-spline
     n = len(points)
     d = len(points[0])
-    degree = 2
     if n <= degree:
         raise ValueError("len(points) must be greater than 2")
     knots = list(range(n + degree + 1))
@@ -34,8 +33,10 @@ def interpolate(points):
     return f
 
 
-def spline(points, t):
-    return map(interpolate(points), map(lambda x: x / t, range(0, t + 1, 1)))
+def spline(points, degree, t):
+    return map( interpolate(points, degree)
+              , map(lambda x: x / t, range(0, t + 1, 1))
+              )
 
 
 def plot(xs, ys):
@@ -62,7 +63,7 @@ def main():
         , [0, -2.75]
         , [5, -5]
         ]
-    plot(points, spline(points, 5000))
+    plot(points, spline(points, 4, 5000))
 
 
 if __name__ == "__main__":

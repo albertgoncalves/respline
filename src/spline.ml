@@ -4,10 +4,10 @@ module U = Utils
 
 let (|.) = U.(|.)
 
-let interpolate (points : float list list) (t : float) : float list =
+let interpolate (points : float list list) (degree : int) (t : float)
+        : float list =
     (* rip off of https://github.com/thibauts/b-spline *)
     let points' : float array array = L.map A.of_list points |> A.of_list in
-    let degree : int = 2 in
     let n : int = A.length points' in
     if n <= degree then
         []
@@ -50,5 +50,6 @@ let interpolate (points : float list list) (t : float) : float list =
                 done
                 ; L.init d (fun i -> v.(s).(i) /. v.(s).(d))
 
-let spline (points : float list list) : (int -> float list list) =
-    L.map (interpolate points) |. U.slice |. (( * ) (L.length points))
+let spline (points : float list list) (degree : int)
+        : (int -> float list list) =
+    L.map (interpolate points degree) |. U.slice |. (( * ) (L.length points))

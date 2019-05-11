@@ -44,7 +44,7 @@ let main () : unit =
     ; L.iter
         (fun points'' ->
             D.dots context points'' (linewidth /. 5.0) radius black
-            ; D.lines context (S.spline points'' 100) linewidth black)
+            ; D.lines context (S.spline points'' 4 100) linewidth black)
         points'
     ; D.export surface Y.argv.(4)
 
